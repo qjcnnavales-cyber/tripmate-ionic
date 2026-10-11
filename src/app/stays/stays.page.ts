@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthButtonsComponent } from '../components/auth-buttons/auth-buttons.component';
@@ -121,7 +121,7 @@ export class StaysPage implements OnInit {
 
   activeChips: any[] = [];
   
-  constructor() { }
+  constructor(private route: ActivatedRoute) { }
   
   ngOnInit() {
     this.currentUser = JSON.parse(localStorage.getItem("tripmate_user") || "null");
@@ -149,7 +149,17 @@ export class StaysPage implements OnInit {
         });
     } catch {}
 
-    this.applyFilters();
+    this.route.queryParams.subscribe(params => {
+      if (params['search']) {
+        this.search = params['search'];
+      }
+      this.applyFilters();
+    });
+  }
+
+  focusSearch() {
+    const input = document.getElementById('searchInput') as HTMLInputElement;
+    if (input) input.focus();
   }
   
   applyFilters() {

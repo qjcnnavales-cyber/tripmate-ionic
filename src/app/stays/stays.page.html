@@ -10,11 +10,11 @@
             <p>Hotels, house rentals, cabins, villas and resorts — filter by what actually matters to your trip.</p>
 
             <div class="hero-search">
-                <div class="hero-search-field">
+                <div class="hero-search-field" (click)="focusSearch()">
                     <label for="searchInput">Search</label>
-                    <input type="text" id="searchInput" placeholder="Try 'Siargao' or 'Driftwood House'" [(ngModel)]="search" (ngModelChange)="applyFilters()">
+                    <input type="text" id="searchInput" placeholder="Try 'Siargao' or 'Driftwood House'" [(ngModel)]="search" (ngModelChange)="applyFilters()" (keyup.enter)="applyFilters()">
                 </div>
-                <button class="search-btn" id="heroSearchBtn" type="button">
+                <button class="search-btn" id="heroSearchBtn" type="button" (click)="applyFilters()">
                     Search
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="11" cy="11" r="7" />
@@ -184,7 +184,8 @@
                 <div class="footer-col">
                     <h4>Explore</h4>
                     <a routerLink="/stays">Stays</a>
-                    <a routerLink="/how-it-works">How it works</a>`n                    <a routerLink="/become-host">Become a Host</a>
+                    <a routerLink="/how-it-works">How it works</a>
+                    <a routerLink="/become-host">Become a Host</a>
                     </div>
                 <div class="footer-col">
                     <h4>Support</h4>

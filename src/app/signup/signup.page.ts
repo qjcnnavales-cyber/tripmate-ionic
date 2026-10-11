@@ -43,7 +43,7 @@ export class SignupPage implements OnInit {
   ngOnInit() {
     // If already logged in, redirect away
     if (this.auth.isLoggedIn()) {
-      this.router.navigateByUrl('/dashboard');
+      this.router.navigateByUrl('/homepage');
       return;
     }
     this.route.queryParams.subscribe(params => {
@@ -91,7 +91,7 @@ export class SignupPage implements OnInit {
         businessName: this.mode === 'host' ? this.businessName.trim() : undefined,
       });
       this.displayToast(`Welcome to TripMate, ${user.full_name.split(' ')[0]}!`, false);
-      setTimeout(() => this.router.navigateByUrl('/dashboard'), 800);
+      setTimeout(() => this.router.navigateByUrl('/homepage'), 800);
     } catch (error: any) {
       this.emailError = error.message || 'Unable to create account.';
       this.isSubmitting = false;

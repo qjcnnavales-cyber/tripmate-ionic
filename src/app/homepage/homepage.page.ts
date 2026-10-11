@@ -132,6 +132,23 @@ export class HomepagePage implements OnInit, OnDestroy {
     this.router.navigate(['/stays'], { queryParams });
   }
 
+  searchDestination(dest: string) {
+    this.router.navigate(['/stays'], { queryParams: { search: dest } });
+  }
+
+  onFeaturedStayClick() {
+    if (this.featuredStays.length > 0) {
+      const stay = this.featuredStays[this.currentIndex];
+      const categoryMap: { [key: string]: string } = {
+        'stay-1': 'Beachfront',
+        'stay-2': 'Cabin',
+        'stay-3': 'Resort'
+      };
+      const term = categoryMap[stay.id] || stay.title;
+      this.router.navigate(['/stays'], { queryParams: { search: term } });
+    }
+  }
+
   toggleMobileNav() {
     this.isMobileNavOpen = !this.isMobileNavOpen;
   }

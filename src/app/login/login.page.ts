@@ -33,7 +33,7 @@ export class LoginPage implements OnInit {
 
   ngOnInit() {
     if (this.auth.isLoggedIn()) {
-      this.router.navigateByUrl('/dashboard');
+      this.router.navigateByUrl('/homepage');
       return;
     }
     this.route.queryParams.subscribe(params => {
@@ -64,7 +64,7 @@ export class LoginPage implements OnInit {
       const user = await this.auth.signIn(this.email.trim(), this.password);
       this.displayToast(`Welcome back, ${user.full_name.split(' ')[0]}!`);
       const redirectParam = this.route.snapshot.queryParams['redirect'];
-      const destination = redirectParam || (user.role === 'host' ? '/dashboard' : '/dashboard');
+      const destination = redirectParam || '/homepage';
       setTimeout(() => this.router.navigateByUrl(destination), 700);
     } catch (error: any) {
       this.emailError = error.message || 'Unable to log in.';

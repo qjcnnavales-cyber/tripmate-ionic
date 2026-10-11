@@ -20,7 +20,7 @@
                 </div>
             </div>
 
-            <div class="stay-card" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
+            <div class="stay-card" (click)="onFeaturedStayClick()" style="cursor: pointer;" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
                 <div class="stay-media" *ngIf="featuredStays.length > 0">
                     <img [src]="featuredStays[currentIndex].img" [alt]="featuredStays[currentIndex].title">
                     <span class="stay-count">{{currentIndex + 1}}/{{featuredStays.length}}</span>
@@ -38,9 +38,9 @@
 
     <div class="search-wrap">
         <div class="search-bar">
-            <div class="search-field">
-                <label>Destination</label>
-                <select [(ngModel)]="destination">
+            <div class="search-field" (click)="destSelect.focus()">
+                <label for="destSelect">Destination</label>
+                <select #destSelect id="destSelect" [(ngModel)]="destination">
                     <option value="">Where to?</option>
                     <option value="Baguio">Baguio</option>
                     <option value="Batanes">Batanes</option>
@@ -55,13 +55,13 @@
                     <option value="Zambales">Zambales</option>
                 </select>
             </div>
-            <div class="search-field">
-                <label>Check in</label>
-                <input type="date" [(ngModel)]="checkin">
+            <div class="search-field" (click)="checkinInput.focus()">
+                <label for="checkinInput">Check in</label>
+                <input #checkinInput id="checkinInput" type="date" [(ngModel)]="checkin">
             </div>
-            <div class="search-field">
-                <label>Check out</label>
-                <input type="date" [(ngModel)]="checkout">
+            <div class="search-field" (click)="checkoutInput.focus()">
+                <label for="checkoutInput">Check out</label>
+                <input #checkoutInput id="checkoutInput" type="date" [(ngModel)]="checkout">
             </div>
             <button class="search-btn" (click)="onSearch()" type="button">
                 Search
@@ -79,23 +79,23 @@
             <p>The regions travelers are booking most this season — picked by where our hosts actually live.</p>
         </div>
         <div class="dest-grid">
-            <div class="dest-card">
+            <div class="dest-card" (click)="searchDestination('Palawan')" style="cursor: pointer;">
                 <img src="https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?q=80&w=800&auto=format&fit=crop" alt="El Nido, Palawan">
                 <div class="dest-tag"><span class="name">Palawan</span></div>
             </div>
-            <div class="dest-card">
+            <div class="dest-card" (click)="searchDestination('Siargao')" style="cursor: pointer;">
                 <img src="https://media.digitalnomads.world/wp-content/uploads/2021/01/20120637/siargao-digital-nomads.jpg" alt="Siargao">
                 <div class="dest-tag"><span class="name">Siargao</span></div>
             </div>
-            <div class="dest-card">
+            <div class="dest-card" (click)="searchDestination('Baguio')" style="cursor: pointer;">
                 <img src="https://static.tripzilla.ph/media/92692/conversions/free-tourist-spots-baguio-w1024.webp" alt="Baguio">
                 <div class="dest-tag"><span class="name">Baguio</span></div>
             </div>
-            <div class="dest-card">
+            <div class="dest-card" (click)="searchDestination('Batanes')" style="cursor: pointer;">
                 <img src="assets/images/batanes.jpg" alt="Batanes">
                 <div class="dest-tag"><span class="name">Batanes</span></div>
             </div>
-            <div class="dest-card">
+            <div class="dest-card" (click)="searchDestination('Boracay')" style="cursor: pointer;">
                 <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=800&auto=format&fit=crop" alt="Boracay">
                 <div class="dest-tag"><span class="name">Boracay</span></div>
             </div>

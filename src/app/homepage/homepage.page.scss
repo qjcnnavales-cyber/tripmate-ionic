@@ -22,7 +22,7 @@
 body {
     font-family: 'Inter', sans-serif;
     background: var(--cream);
-    color: var(--ink);
+    color: #171E1C !important; caret-color: #FF6B4A !important;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -178,7 +178,7 @@ nav {
     right: 0;
     width: min(280px, calc(100vw - 32px));
     min-width: 0;
-    background: var(--white);
+    background: #FFFFFF !important;
     border: 1px solid var(--cream-dark);
     border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
@@ -222,7 +222,7 @@ nav {
     align-items: center;
     gap: 10px;
     padding: 12px 16px;
-    color: var(--ink);
+    color: #171E1C !important; caret-color: #FF6B4A !important;
     font-size: 14px;
     text-decoration: none;
     transition: background .2s ease;
@@ -230,7 +230,7 @@ nav {
 
 .dropdown-item:hover {
     background: var(--cream);
-    color: var(--teal-700);
+    color: #18635B !important;
 }
 
 .dropdown-item svg {
@@ -241,7 +241,7 @@ nav {
 }
 
 .dropdown-item:hover svg {
-    color: var(--teal-700);
+    color: #18635B !important;
 }
 
 .nav-toggle {
@@ -305,7 +305,7 @@ nav {
 }
 
 .btn-primary:hover {
-    background: var(--white);
+    background: #FFFFFF !important;
     transform: translateY(-2px);
 }
 
@@ -451,7 +451,7 @@ nav {
 }
 
 .search-bar {
-    background: var(--white);
+    background: #FFFFFF !important;
     border-radius: 18px;
     box-shadow: 0 20px 50px rgba(11, 61, 58, 0.18);
     display: flex;
@@ -477,7 +477,7 @@ nav {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: var(--teal-700);
+    color: #18635B !important;
     margin-bottom: 4px;
 }
 
@@ -487,12 +487,12 @@ nav {
     font-family: 'Inter', sans-serif;
     font-size: 14.5px;
     width: 100%;
-    color: var(--ink);
+    color: #171E1C !important; caret-color: #FF6B4A !important;
     background: transparent;
 }
 
 .search-field input::placeholder, .search-field select::placeholder {
-    color: #A6A091;
+    color: #8E887B !important;
 }
 
 .search-btn {
@@ -670,7 +670,7 @@ section {
     position: absolute;
     top: 12px;
     left: 12px;
-    background: var(--white);
+    background: #FFFFFF !important;
     color: var(--teal-950);
     font-size: 12px;
     font-weight: 600;
@@ -707,7 +707,7 @@ section {
 .listing-price {
     margin-top: 10px;
     font-size: 14.5px;
-    color: var(--ink);
+    color: #171E1C !important; caret-color: #FF6B4A !important;
 }
 
 .listing-price b {
