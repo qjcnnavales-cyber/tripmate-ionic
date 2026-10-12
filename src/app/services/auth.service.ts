@@ -50,7 +50,14 @@ export class AuthService {
 
       if (session?.user) {
         const profile = await this.fetchProfile(session.user.id);
-        this.ngZone.run(() => this._state.next(profile ?? null));
+        const appUser: AppUser = profile || {
+          id: session.user.id,
+          full_name: (session.user.user_metadata?.['full_name'] as string) || session.user.email?.split('@')[0] || 'User',
+          email: session.user.email || '',
+          role: (session.user.user_metadata?.['role'] as any) || 'guest',
+          avatar_url: (session.user.user_metadata?.['avatar_url'] as string) || undefined,
+        };
+        this.ngZone.run(() => this._state.next(appUser));
       } else {
         this.ngZone.run(() => this._state.next(null));
       }
@@ -104,7 +111,17 @@ export class AuthService {
     });
     if (error) throw new Error(error.message);
     if (!data.user) throw new Error('Signup failed.');
-    return this.currentUser!;
+
+    const profile = await this.fetchProfile(data.user.id);
+    const appUser: AppUser = profile || {
+      id: data.user.id,
+      full_name: payload.full_name,
+      email: payload.email,
+      role: payload.role,
+      businessName: payload.businessName,
+    };
+    this.ngZone.run(() => this._state.next(appUser));
+    return appUser;
   }
 
   async signIn(email: string, password: string): Promise<AppUser> {
@@ -120,11 +137,17 @@ export class AuthService {
     const { data, error } = await this.supabase.auth.signInWithPassword({ email, password });
     if (error) throw new Error(error.message);
     if (!data.user) throw new Error('Login failed.');
-    return new Promise(resolve => {
-      const sub = this.currentUser$.subscribe(u => {
-        if (u && u !== 'loading') { sub.unsubscribe(); resolve(u); }
-      });
-    });
+
+    const profile = await this.fetchProfile(data.user.id);
+    const appUser: AppUser = profile || {
+      id: data.user.id,
+      full_name: (data.user.user_metadata?.['full_name'] as string) || data.user.email?.split('@')[0] || 'User',
+      email: data.user.email || email,
+      role: (data.user.user_metadata?.['role'] as any) || 'guest',
+      avatar_url: (data.user.user_metadata?.['avatar_url'] as string) || undefined,
+    };
+    this.ngZone.run(() => this._state.next(appUser));
+    return appUser;
   }
 
   async updateProfile(updates: Partial<AppUser>) {
@@ -151,6 +174,7 @@ export class AuthService {
       return;
     }
     await this.supabase.auth.signOut();
+    this.ngZone.run(() => this._state.next(null));
     this.router.navigateByUrl('/homepage');
   }
 
