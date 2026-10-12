@@ -8,7 +8,7 @@
     <ion-title>Budget Tracker</ion-title>
 
     <ion-buttons slot="end">
-      <ion-button class="add-expense-btn">
+      <ion-button class="add-expense-btn" (click)="openAddExpenseModal()">
         <ion-icon name="add-outline" slot="start"></ion-icon>
         Add Expense
       </ion-button>
@@ -34,13 +34,17 @@
         </p>
       </div>
 
-      <div class="trip-badge">
+      <div class="trip-badge" (click)="openEditBudgetModal()" role="button" tabindex="0" title="Click to edit budget">
         <ion-icon name="wallet-outline"></ion-icon>
 
         <div>
           <span>TRIP BUDGET</span>
-          <strong>₱25,000</strong>
+          <strong>{{ totalBudget > 0 ? ('₱' + (totalBudget | number)) : 'Set Budget' }}</strong>
         </div>
+
+        <button type="button" class="badge-edit-btn" aria-label="Edit Budget" (click)="$event.stopPropagation(); openEditBudgetModal()">
+          <ion-icon name="create-outline"></ion-icon>
+        </button>
       </div>
 
     </section>
@@ -57,8 +61,11 @@
 
         <div class="summary-info">
           <span>Total Budget</span>
-          <h2>₱25,000</h2>
-          <p>Available trip budget</p>
+          <h2>₱{{ totalBudget | number }}</h2>
+          <p>
+            {{ totalBudget > 0 ? 'Available trip budget' : 'No budget set yet' }}
+            <button type="button" class="inline-edit-btn" (click)="openEditBudgetModal()">• {{ totalBudget > 0 ? 'Edit' : 'Set Budget' }}</button>
+          </p>
         </div>
 
       </div>
@@ -72,8 +79,8 @@
 
         <div class="summary-info">
           <span>Total Spent</span>
-          <h2 class="spent">₱18,500</h2>
-          <p>74% of your budget</p>
+          <h2 class="spent">₱{{ totalSpent | number }}</h2>
+          <p>{{ totalBudget > 0 ? (spentPercentage + '% of your budget') : 'Logged expenses' }}</p>
         </div>
 
       </div>
@@ -87,8 +94,12 @@
 
         <div class="summary-info">
           <span>Remaining</span>
-          <h2 class="remaining">₱6,500</h2>
-          <p>26% still available</p>
+          <h2 class="remaining" [class.over-budget]="remainingBudget < 0">
+            ₱{{ (remainingBudget >= 0 ? remainingBudget : 0) | number }}
+          </h2>
+          <p>
+            {{ totalBudget > 0 ? (remainingBudget >= 0 ? remainingPercentage + '% still available' : 'Over budget by ₱' + (totalSpent - totalBudget | number)) : 'Set budget to track balance' }}
+          </p>
         </div>
 
       </div>
@@ -106,17 +117,21 @@
           <h2>Budget Progress</h2>
         </div>
 
-        <strong>74% spent</strong>
+        <strong>{{ spentPercentage }}% spent</strong>
 
       </div>
 
       <div class="main-progress">
-        <div class="main-progress-fill"></div>
+        <div
+          class="main-progress-fill"
+          [style.width.%]="spentPercentage > 100 ? 100 : spentPercentage"
+          [class.progress-exceeded]="spentPercentage > 100"
+        ></div>
       </div>
 
       <div class="progress-labels">
         <span>₱0</span>
-        <span>₱25,000</span>
+        <span>₱{{ totalBudget | number }}</span>
       </div>
 
     </section>
@@ -132,122 +147,52 @@
           <h2>Expenses by Category</h2>
         </div>
 
-        <span class="expense-total">
-          Total ₱18,500
+        <span class="expense-total" *ngIf="categoryBreakdown.length > 0">
+          Total ₱{{ totalSpent | number }}
         </span>
 
       </div>
 
 
-      <div class="category-list">
+      <div class="category-list" *ngIf="categoryBreakdown.length > 0">
 
-        <!-- ACCOMMODATION -->
-        <div class="category-row">
+        <div class="category-row" *ngFor="let cat of categoryBreakdown">
 
           <div class="category-name">
 
-            <div class="category-icon accommodation">
-              <ion-icon name="bed-outline"></ion-icon>
+            <div class="category-icon" [ngClass]="cat.colorClass">
+              <ion-icon [name]="cat.icon"></ion-icon>
             </div>
 
             <div>
-              <strong>Accommodation</strong>
-              <span>46% of expenses</span>
+              <strong>{{ cat.name }}</strong>
+              <span>{{ cat.percentOfSpent }}% of expenses</span>
             </div>
 
           </div>
 
           <div class="category-bar">
-            <div class="bar-fill accommodation-bar"></div>
+            <div
+              class="bar-fill"
+              [ngClass]="cat.barClass"
+              [style.width.%]="cat.percentOfSpent"
+            ></div>
           </div>
 
           <strong class="category-price">
-            ₱8,500
+            ₱{{ cat.amount | number }}
           </strong>
 
         </div>
 
+      </div>
 
-        <!-- TRANSPORT -->
-        <div class="category-row">
-
-          <div class="category-name">
-
-            <div class="category-icon transport">
-              <ion-icon name="airplane-outline"></ion-icon>
-            </div>
-
-            <div>
-              <strong>Transport</strong>
-              <span>27% of expenses</span>
-            </div>
-
-          </div>
-
-          <div class="category-bar">
-            <div class="bar-fill transport-bar"></div>
-          </div>
-
-          <strong class="category-price">
-            ₱5,000
-          </strong>
-
+      <div class="empty-category-card" *ngIf="categoryBreakdown.length === 0">
+        <div class="empty-category-icon">
+          <ion-icon name="pie-chart-outline"></ion-icon>
         </div>
-
-
-        <!-- FOOD -->
-        <div class="category-row">
-
-          <div class="category-name">
-
-            <div class="category-icon food">
-              <ion-icon name="restaurant-outline"></ion-icon>
-            </div>
-
-            <div>
-              <strong>Food</strong>
-              <span>19% of expenses</span>
-            </div>
-
-          </div>
-
-          <div class="category-bar">
-            <div class="bar-fill food-bar"></div>
-          </div>
-
-          <strong class="category-price">
-            ₱3,500
-          </strong>
-
-        </div>
-
-
-        <!-- ACTIVITIES -->
-        <div class="category-row">
-
-          <div class="category-name">
-
-            <div class="category-icon activities">
-              <ion-icon name="map-outline"></ion-icon>
-            </div>
-
-            <div>
-              <strong>Activities</strong>
-              <span>8% of expenses</span>
-            </div>
-
-          </div>
-
-          <div class="category-bar">
-            <div class="bar-fill activities-bar"></div>
-          </div>
-
-          <strong class="category-price">
-            ₱1,500
-          </strong>
-
-        </div>
-
+        <p>No categorized expenses yet</p>
+        <span>Add an expense above to see your category breakdown.</span>
       </div>
 
     </section>
@@ -260,93 +205,202 @@
 
         <div>
           <span class="section-label">TRANSACTIONS</span>
-          <h2>Recent Expenses</h2>
+          <h2>{{ isShowingAll ? 'All Expenses' : 'Trip Expenses' }}</h2>
         </div>
 
-        <button class="view-all-btn">
-          View all
+        <button class="view-all-btn" (click)="toggleViewAll()" *ngIf="expenses.length > 0">
+          {{ isShowingAll ? 'Show less' : 'View all (' + expenses.length + ')' }}
         </button>
 
       </div>
 
 
-      <div class="expense-list">
+      <!-- EXPENSE LIST -->
+      <div class="expense-list" *ngIf="expenses.length > 0">
 
-        <!-- HOMESTAY -->
-        <div class="expense-item">
+        <div class="expense-item" *ngFor="let exp of displayedExpenses">
 
-          <div class="expense-icon accommodation">
-            <ion-icon name="bed-outline"></ion-icon>
+          <div class="expense-icon" [ngClass]="getCategoryClass(exp.category)">
+            <ion-icon [name]="getCategoryIcon(exp.category)"></ion-icon>
           </div>
 
           <div class="expense-details">
-            <h3>Kubo Homestay</h3>
+            <h3>{{ exp.description }}</h3>
             <p>
-              Accommodation
+              {{ exp.category }}
               <span>•</span>
-              Oct 12, 2026
+              {{ formatDate(exp.date) }}
             </p>
           </div>
 
-          <div class="expense-amount">
-            <strong>-₱8,500</strong>
-            <span>Paid</span>
-          </div>
+          <div class="expense-trailing">
+            <div class="expense-amount">
+              <strong>-₱{{ exp.amount | number }}</strong>
+              <span>Paid</span>
+            </div>
 
-        </div>
-
-
-        <!-- FLIGHT -->
-        <div class="expense-item">
-
-          <div class="expense-icon transport">
-            <ion-icon name="airplane-outline"></ion-icon>
-          </div>
-
-          <div class="expense-details">
-            <h3>Flight to Palawan</h3>
-            <p>
-              Transport
-              <span>•</span>
-              Oct 11, 2026
-            </p>
-          </div>
-
-          <div class="expense-amount">
-            <strong>-₱5,000</strong>
-            <span>Paid</span>
-          </div>
-
-        </div>
-
-
-        <!-- DINNER -->
-        <div class="expense-item">
-
-          <div class="expense-icon food">
-            <ion-icon name="restaurant-outline"></ion-icon>
-          </div>
-
-          <div class="expense-details">
-            <h3>Seafood Dinner</h3>
-            <p>
-              Food
-              <span>•</span>
-              Oct 12, 2026
-            </p>
-          </div>
-
-          <div class="expense-amount">
-            <strong>-₱1,200</strong>
-            <span>Paid</span>
+            <div class="expense-actions">
+              <button
+                type="button"
+                class="exp-action-btn edit"
+                (click)="openEditExpenseModal(exp)"
+                [attr.aria-label]="'Edit ' + exp.description"
+              >
+                <ion-icon name="create-outline"></ion-icon>
+              </button>
+              <button
+                type="button"
+                class="exp-action-btn delete"
+                (click)="deleteExpense(exp)"
+                [attr.aria-label]="'Delete ' + exp.description"
+              >
+                <ion-icon name="trash-outline"></ion-icon>
+              </button>
+            </div>
           </div>
 
         </div>
 
       </div>
 
+      <!-- EMPTY STATE -->
+      <div class="empty-expenses-card" *ngIf="expenses.length === 0">
+        <div class="empty-icon-wrap">
+          <ion-icon name="cash-outline"></ion-icon>
+        </div>
+        <h3>No expenses recorded yet</h3>
+        <p>Start logging your expenses to track your spending against your budget.</p>
+        <button type="button" class="empty-add-btn" (click)="openAddExpenseModal()">
+          <ion-icon name="add-outline"></ion-icon>
+          Add Your First Expense
+        </button>
+      </div>
+
     </section>
 
   </main>
+
+  <!-- =====================================
+       ADD / EDIT EXPENSE MODAL
+  ====================================== -->
+  <div class="modal-overlay" *ngIf="isExpenseModalOpen" (click)="closeExpenseModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="expenseModalHeading">
+
+      <div class="modal-head">
+        <h2 id="expenseModalHeading">{{ expenseModalTitle }}</h2>
+        <button type="button" class="modal-close-btn" aria-label="Close" (click)="closeExpenseModal()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+
+      <form (ngSubmit)="saveExpense()" novalidate class="modal-form">
+
+        <div class="form-field">
+          <label for="expDescription">Expense Description *</label>
+          <input
+            type="text"
+            id="expDescription"
+            [(ngModel)]="expenseForm.description"
+            name="description"
+            placeholder="e.g. Kubo Homestay, Seafood Lunch"
+            required
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label for="expCategory">Category *</label>
+            <select
+              id="expCategory"
+              [(ngModel)]="expenseForm.category"
+              name="category"
+              required
+            >
+              <option *ngFor="let cat of categoriesList" [value]="cat">{{ cat }}</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="expAmount">Amount (₱) *</label>
+            <input
+              type="number"
+              id="expAmount"
+              [(ngModel)]="expenseForm.amount"
+              name="amount"
+              placeholder="e.g. 1500"
+              min="1"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="expDate">Date *</label>
+          <input
+            type="date"
+            id="expDate"
+            [(ngModel)]="expenseForm.date"
+            name="date"
+            required
+          />
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" (click)="closeExpenseModal()">
+            Cancel
+          </button>
+          <button type="submit" class="btn-save">
+            {{ isEditingExpense ? 'Update Expense' : 'Add Expense' }}
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+  <!-- =====================================
+       SET / EDIT BUDGET MODAL
+  ====================================== -->
+  <div class="modal-overlay" *ngIf="isBudgetModalOpen" (click)="closeBudgetModal()">
+    <div class="modal-card budget-modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="budgetModalHeading">
+
+      <div class="modal-head">
+        <h2 id="budgetModalHeading">Set Trip Budget</h2>
+        <button type="button" class="modal-close-btn" aria-label="Close" (click)="closeBudgetModal()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+
+      <form (ngSubmit)="saveBudget()" novalidate class="modal-form">
+
+        <div class="form-field">
+          <label for="budgetAmountInput">Total Trip Budget (₱) *</label>
+          <input
+            type="number"
+            id="budgetAmountInput"
+            [(ngModel)]="budgetInput"
+            name="budgetInput"
+            placeholder="e.g. 25000"
+            min="100"
+            required
+          />
+          <small class="field-hint">Specify your target overall budget for this journey.</small>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" (click)="closeBudgetModal()">
+            Cancel
+          </button>
+          <button type="submit" class="btn-save">
+            Update Budget
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
 
 </ion-content>
