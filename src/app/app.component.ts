@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { IonApp, IonRouterOutlet, IonMenu, IonHeader, IonToolbar, IonContent, IonList, IonItem, IonIcon, IonLabel, IonMenuToggle } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { timeOutline, businessOutline, layersOutline, phonePortraitOutline, documentTextOutline, shieldHalfOutline, homeOutline, bedOutline, informationCircleOutline, keyOutline, mapOutline, walletOutline, calendarOutline, codeSlashOutline, mailOutline, addOutline, createOutline, trashOutline, airplaneOutline, restaurantOutline, personCircleOutline, heartOutline, logOutOutline } from 'ionicons/icons';
+import { timeOutline, businessOutline, layersOutline, phonePortraitOutline, documentTextOutline, shieldHalfOutline, homeOutline, bedOutline, informationCircleOutline, keyOutline, mapOutline, walletOutline, calendarOutline, codeSlashOutline, mailOutline, addOutline, createOutline, trashOutline, airplaneOutline, restaurantOutline, personCircleOutline, heartOutline, logOutOutline, personOutline, shieldCheckmarkOutline, shieldOutline } from 'ionicons/icons';
 import { AuthService, AppUser } from './services/auth.service';
 import { Subscription } from 'rxjs';
 
@@ -150,7 +150,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private authSub!: Subscription;
 
   constructor(private authService: AuthService) {
-    addIcons({ timeOutline, businessOutline, layersOutline, phonePortraitOutline, documentTextOutline, shieldHalfOutline, homeOutline, bedOutline, informationCircleOutline, keyOutline, mapOutline, walletOutline, calendarOutline, codeSlashOutline, mailOutline, addOutline, createOutline, trashOutline, airplaneOutline, restaurantOutline, personCircleOutline, heartOutline, logOutOutline });
+    addIcons({ timeOutline, businessOutline, layersOutline, phonePortraitOutline, documentTextOutline, shieldHalfOutline, homeOutline, bedOutline, informationCircleOutline, keyOutline, mapOutline, walletOutline, calendarOutline, codeSlashOutline, mailOutline, addOutline, createOutline, trashOutline, airplaneOutline, restaurantOutline, personCircleOutline, heartOutline, logOutOutline, personOutline, shieldCheckmarkOutline, shieldOutline });
   }
 
   ngOnInit() {

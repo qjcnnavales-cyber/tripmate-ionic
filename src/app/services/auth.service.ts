@@ -19,15 +19,25 @@ const MOCK_USERS_KEY = 'tripmate_mock_users';
 const MOCK_SESSION_KEY = 'tripmate_mock_session';
 
 export type AuthState = AppUser | null | 'loading';
+const ROLE_STORAGE_KEY = 'tripmate_user_role';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private _state = new BehaviorSubject<AuthState>('loading');
   currentUser$ = this._state.asObservable();
 
+  private _role = new BehaviorSubject<'guest' | 'host' | 'admin'>(
+    (localStorage.getItem(ROLE_STORAGE_KEY) as any) || 'guest'
+  );
+  userRole$ = this._role.asObservable();
+
   get currentUser(): AppUser | null {
     const v = this._state.value;
     return v === 'loading' ? null : v;
+  }
+
+  get userRole(): 'guest' | 'host' | 'admin' {
+    return this._role.value;
   }
 
   constructor(private supabase: SupabaseService, private router: Router, private ngZone: NgZone) {
@@ -38,8 +48,18 @@ export class AuthService {
     if (environment.USE_MOCK_DATA) {
       const stored = localStorage.getItem(MOCK_SESSION_KEY);
       try {
-        this.ngZone.run(() => this._state.next(stored ? JSON.parse(stored) : null));
+        const u = stored ? JSON.parse(stored) : null;
+        if (u) {
+          const role = u.role || 'guest';
+          this._role.next(role);
+          localStorage.setItem(ROLE_STORAGE_KEY, role);
+        } else {
+          this._role.next('guest');
+          localStorage.removeItem(ROLE_STORAGE_KEY);
+        }
+        this.ngZone.run(() => this._state.next(u));
       } catch {
+        this._role.next('guest');
         this.ngZone.run(() => this._state.next(null));
       }
       return;
@@ -50,23 +70,39 @@ export class AuthService {
 
       if (session?.user) {
         const profile = await this.fetchProfile(session.user.id);
-        const appUser: AppUser = profile || {
+        const isAdminEmail = session.user.email?.toLowerCase() === 'admin@tripmate.app';
+        const defaultRole = isAdminEmail ? 'admin' : 'guest';
+        const role = profile?.role || (session.user.user_metadata?.['role'] as any) || (localStorage.getItem(ROLE_STORAGE_KEY) as any) || defaultRole;
+        const appUser: AppUser = {
           id: session.user.id,
-          full_name: (session.user.user_metadata?.['full_name'] as string) || session.user.email?.split('@')[0] || 'User',
-          email: session.user.email || '',
-          role: (session.user.user_metadata?.['role'] as any) || 'guest',
-          avatar_url: (session.user.user_metadata?.['avatar_url'] as string) || undefined,
+          full_name: profile?.full_name || (session.user.user_metadata?.['full_name'] as string) || session.user.email?.split('@')[0] || 'User',
+          email: profile?.email || session.user.email || '',
+          role: role,
+          avatar_url: profile?.avatar_url || (session.user.user_metadata?.['avatar_url'] as string) || undefined,
+          phone: profile?.phone
         };
-        this.ngZone.run(() => this._state.next(appUser));
+        localStorage.setItem(ROLE_STORAGE_KEY, appUser.role);
+        this.ngZone.run(() => {
+          this._role.next(appUser.role);
+          this._state.next(appUser);
+        });
       } else {
-        this.ngZone.run(() => this._state.next(null));
+        localStorage.removeItem(ROLE_STORAGE_KEY);
+        this.ngZone.run(() => {
+          this._role.next('guest');
+          this._state.next(null);
+        });
       }
     });
 
     setTimeout(() => {
       if (this._state.value === 'loading') {
         console.warn('[AuthService] Session check timed out after 3s, forcing logged-out state');
-        this.ngZone.run(() => this._state.next(null));
+        localStorage.removeItem(ROLE_STORAGE_KEY);
+        this.ngZone.run(() => {
+          this._role.next('guest');
+          this._state.next(null);
+        });
       }
     }, 3000);
   }
@@ -120,7 +156,11 @@ export class AuthService {
       role: payload.role,
       businessName: payload.businessName,
     };
-    this.ngZone.run(() => this._state.next(appUser));
+    localStorage.setItem(ROLE_STORAGE_KEY, appUser.role);
+    this.ngZone.run(() => {
+      this._role.next(appUser.role);
+      this._state.next(appUser);
+    });
     return appUser;
   }
 
@@ -130,7 +170,11 @@ export class AuthService {
       if (!user) throw new Error('Invalid email or password.');
       const { password: _pw, ...safe } = user;
       localStorage.setItem(MOCK_SESSION_KEY, JSON.stringify(safe));
-      this.ngZone.run(() => this._state.next(safe));
+      localStorage.setItem(ROLE_STORAGE_KEY, safe.role);
+      this.ngZone.run(() => {
+        this._role.next(safe.role);
+        this._state.next(safe);
+      });
       return safe;
     }
 
@@ -139,14 +183,22 @@ export class AuthService {
     if (!data.user) throw new Error('Login failed.');
 
     const profile = await this.fetchProfile(data.user.id);
-    const appUser: AppUser = profile || {
+    const isAdminEmail = (data.user.email || email).toLowerCase() === 'admin@tripmate.app';
+    const defaultRole = isAdminEmail ? 'admin' : 'guest';
+    const role: 'guest' | 'host' | 'admin' = profile?.role || (data.user.user_metadata?.['role'] as any) || defaultRole;
+    const appUser: AppUser = {
       id: data.user.id,
-      full_name: (data.user.user_metadata?.['full_name'] as string) || data.user.email?.split('@')[0] || 'User',
-      email: data.user.email || email,
-      role: (data.user.user_metadata?.['role'] as any) || 'guest',
-      avatar_url: (data.user.user_metadata?.['avatar_url'] as string) || undefined,
+      full_name: profile?.full_name || (data.user.user_metadata?.['full_name'] as string) || data.user.email?.split('@')[0] || 'User',
+      email: profile?.email || data.user.email || email,
+      role: role,
+      avatar_url: profile?.avatar_url || (data.user.user_metadata?.['avatar_url'] as string) || undefined,
+      phone: profile?.phone
     };
-    this.ngZone.run(() => this._state.next(appUser));
+    localStorage.setItem(ROLE_STORAGE_KEY, appUser.role);
+    this.ngZone.run(() => {
+      this._role.next(appUser.role);
+      this._state.next(appUser);
+    });
     return appUser;
   }
 
@@ -154,6 +206,10 @@ export class AuthService {
     const user = this.currentUser;
     if (!user) return;
     const updatedUser = { ...user, ...updates };
+    if (updates.role) {
+      this._role.next(updates.role);
+      localStorage.setItem(ROLE_STORAGE_KEY, updates.role);
+    }
     if (environment.USE_MOCK_DATA) {
       const users = JSON.parse(localStorage.getItem(MOCK_USERS_KEY) || '[]');
       const idx = users.findIndex((u: any) => u.id === user.id);
@@ -166,7 +222,49 @@ export class AuthService {
     this.ngZone.run(() => this._state.next(updatedUser));
   }
 
+  async becomeHost(): Promise<AppUser> {
+    const user = this.currentUser;
+    if (!user) throw new Error('Must be logged in to become a host');
+
+    if (environment.USE_MOCK_DATA) {
+      const updated: AppUser = { ...user, role: 'host' };
+      const users = this.getMockUsers();
+      const idx = users.findIndex((u: any) => u.id === user.id);
+      if (idx !== -1) {
+        users[idx].role = 'host';
+        localStorage.setItem(MOCK_USERS_KEY, JSON.stringify(users));
+      }
+      localStorage.setItem(MOCK_SESSION_KEY, JSON.stringify(updated));
+      localStorage.setItem(ROLE_STORAGE_KEY, 'host');
+      this.ngZone.run(() => {
+        this._role.next('host');
+        this._state.next(updated);
+      });
+      return updated;
+    }
+
+    const { error } = await this.supabase
+      .from('profiles')
+      .update({ role: 'host' })
+      .eq('id', user.id);
+
+    if (error) {
+      console.error('[AuthService] becomeHost error:', error);
+      throw new Error(error.message);
+    }
+
+    const updatedUser: AppUser = { ...user, role: 'host' };
+    localStorage.setItem(ROLE_STORAGE_KEY, 'host');
+    this.ngZone.run(() => {
+      this._role.next('host');
+      this._state.next(updatedUser);
+    });
+    return updatedUser;
+  }
+
   async signOut() {
+    localStorage.removeItem(ROLE_STORAGE_KEY);
+    this._role.next('guest');
     if (environment.USE_MOCK_DATA) {
       localStorage.removeItem(MOCK_SESSION_KEY);
       this.ngZone.run(() => this._state.next(null));

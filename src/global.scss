@@ -980,3 +980,55 @@ input[type="checkbox"] {
 .sort-select:focus {
   border-color: #FF6B4A !important;
 }
+
+/* ==========================================================================
+   ROLE BADGES (HOST, GUEST, ADMIN)
+   ========================================================================== */
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  line-height: 1.2;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  vertical-align: middle;
+
+  ion-icon {
+    font-size: 0.85rem;
+    margin: 0;
+  }
+
+  &.badge-host {
+    background-color: #FF6B4A;
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    ion-icon {
+      color: #FFFFFF;
+    }
+  }
+
+  &.badge-guest {
+    background-color: #6B7280;
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    ion-icon {
+      color: #FFFFFF;
+    }
+  }
+
+  &.badge-admin {
+    background-color: #062B27;
+    color: #4ADE80;
+    border: 1px solid #16A34A;
+    ion-icon {
+      color: #4ADE80;
+    }
+  }
+}
+

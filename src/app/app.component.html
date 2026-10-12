@@ -40,6 +40,12 @@
         <div class="side-info">
           <h3 class="side-name">{{ user.full_name || 'TripMate User' }}</h3>
           <p class="side-email">{{ user.email }}</p>
+          <div class="side-role" style="margin-top: 6px;">
+            <span class="role-badge" [ngClass]="'badge-' + user.role">
+              <ion-icon [name]="user.role === 'host' ? 'home-outline' : (user.role === 'admin' ? 'shield-checkmark-outline' : 'person-outline')"></ion-icon>
+              {{ user.role }}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -92,6 +98,7 @@
 
           <!-- BECOME A HOST -->
           <ion-item
+            *ngIf="!user || user.role === 'guest'"
             routerLink="/become-host"
             routerDirection="root"
             routerLinkActive="active-menu-item"
@@ -108,6 +115,19 @@
           <div class="menu-section-title" *ngIf="user">
             ACCOUNT
           </div>
+
+          <!-- HOST DASHBOARD -->
+          <ion-item
+            *ngIf="user && user.role === 'host'"
+            routerLink="/dashboard"
+            routerDirection="root"
+            routerLinkActive="active-menu-item"
+            lines="none"
+            detail="false"
+          >
+            <ion-icon name="business-outline" slot="start"></ion-icon>
+            <ion-label>Host Dashboard</ion-label>
+          </ion-item>
 
           <!-- MY TRIPS -->
           <ion-item
@@ -159,6 +179,22 @@
             <ion-icon name="log-out-outline" slot="start"></ion-icon>
             <ion-label>Log out</ion-label>
           </ion-item>
+
+          <!-- ADMIN SECTION (Visible only for Admin) -->
+          <ng-container *ngIf="user && user.role === 'admin'">
+            <div class="menu-divider"></div>
+            <div class="menu-section-title">ADMIN</div>
+            <ion-item
+              routerLink="/admin"
+              routerDirection="root"
+              routerLinkActive="active-menu-item"
+              lines="none"
+              detail="false"
+            >
+              <ion-icon name="shield-checkmark-outline" slot="start"></ion-icon>
+              <ion-label>Admin Dashboard</ion-label>
+            </ion-item>
+          </ng-container>
 
           <div class="menu-divider"></div>
 

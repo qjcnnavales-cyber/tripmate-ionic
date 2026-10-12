@@ -10,8 +10,11 @@ import {
   IonTitle,
   IonToolbar,
   IonMenuButton,
-  IonBackButton
+  IonBackButton,
+  IonIcon
 } from '@ionic/angular';
+import { addIcons } from 'ionicons';
+import { homeOutline, personOutline, shieldCheckmarkOutline } from 'ionicons/icons';
 import { Subscription } from 'rxjs';
 import { AuthService, AppUser } from '../services/auth.service';
 
@@ -30,7 +33,8 @@ import { AuthService, AppUser } from '../services/auth.service';
     CommonModule,
     FormsModule,
     IonMenuButton,
-    IonBackButton
+    IonBackButton,
+    IonIcon
   ]
 })
 export class ProfilePage implements OnInit, OnDestroy {
@@ -69,7 +73,9 @@ export class ProfilePage implements OnInit, OnDestroy {
   constructor(
     private auth: AuthService,
     private router: Router
-  ) {}
+  ) {
+    addIcons({ homeOutline, personOutline, shieldCheckmarkOutline });
+  }
 
   ngOnInit() {
     this.authSubscription = this.auth.currentUser$.subscribe(u => {

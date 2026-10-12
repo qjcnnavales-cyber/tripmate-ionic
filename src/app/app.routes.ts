@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 
 import { guestGuard } from './guest.guard';
+import { adminGuard } from './admin.guard';
 
 
 export const routes: Routes = [
@@ -19,7 +20,13 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    loadComponent: () => import('./admin/admin.page').then( m => m.AdminPage)
+    loadComponent: () => import('./admin/admin.page').then( m => m.AdminPage),
+    canActivate: [adminGuard]
+  },
+  {
+    path: 'host-dashboard',
+    redirectTo: 'dashboard',
+    pathMatch: 'full'
   },
   {
     path: 'booking',

@@ -1,39 +1,8 @@
-<ion-header class="ion-no-border">
-<nav class="sidebar-nav">
-    <ion-menu-button style="color: var(--tm-white);"></ion-menu-button>
-      <button class="nav-item is-active" data-view="dashboard">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
-        <span>Dashboard</span>
-      </button>
-      <button class="nav-item" data-view="inventory">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>
-        <span>Inventory</span>
-        <span class="nav-count" id="navInventoryCount">0</span>
-      </button>
-      <button class="nav-item" data-view="verification">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.8 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
-        <span>Verification</span>
-        <span class="nav-count nav-count-alert" id="navVerificationCount" hidden>0</span>
-      </button>
-      <button class="nav-item" data-view="users">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        <span>Users</span>
-      </button>
-      <button class="nav-item" data-view="transactions">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg>
-        <span>Bookings</span>
-      </button>
-      <button class="nav-item" data-view="admins">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
-        <span>Admins</span>
-      </button>
-    </nav>
-</ion-header>
-<ion-content>
+<ion-content [fullscreen]="true">
 <div class="admin-layout">
 
   <!-- ============ SIDEBAR ============ -->
-  <aside class="sidebar" id="sidebar">
+  <aside class="sidebar" id="sidebar" [class.mobile-open]="sidebarOpen">
 
     <div class="sidebar-brand">
       <span class="logo-badge">
@@ -45,53 +14,95 @@
       </span>
     </div>
 
-    
+    <nav class="sidebar-nav">
+      <button class="nav-item is-active" data-view="dashboard" (click)="switchView('dashboard', $event)">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        <span>Dashboard</span>
+      </button>
+      <button class="nav-item" data-view="inventory" (click)="switchView('inventory', $event)">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>
+        <span>Inventory</span>
+        <span class="nav-count" id="navInventoryCount">0</span>
+      </button>
+      <button class="nav-item" data-view="verification" (click)="switchView('verification', $event)">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.8 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+        <span>Verification</span>
+        <span class="nav-count nav-count-alert" id="navVerificationCount" hidden>0</span>
+      </button>
+      <button class="nav-item" data-view="users" (click)="switchView('users', $event)">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Users</span>
+        <span class="nav-count" id="navUsersCount" *ngIf="users.length">{{ users.length }}</span>
+      </button>
+      <button class="nav-item" data-view="transactions" (click)="switchView('transactions', $event)">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg>
+        <span>Bookings</span>
+      </button>
+      <button class="nav-item" data-view="admins" (click)="switchView('admins', $event)">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
+        <span>Admins</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-bottom" style="margin-top: auto; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.1);">
+      <button class="nav-item" routerLink="/homepage" style="color: rgba(248, 245, 238, 0.75);">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5"/><path d="M9 21v-7h6v7"/></svg>
+        <span>Back to App</span>
+      </button>
+      <button class="nav-item" (click)="logout()" style="color: #FF6B4A;">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+        <span>Log Out</span>
+      </button>
+    </div>
 
   </aside>
 
-  <div class="sidebar-scrim" id="sidebarScrim"></div>
+  <div class="sidebar-scrim" id="sidebarScrim" [class.mobile-open]="sidebarOpen" (click)="toggleMobileSidebar()"></div>
 
   <!-- ============ MAIN ============ -->
   <div class="main">
 
     <header class="topbar">
-      <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" (click)="toggleMobileSidebar()">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
       </button>
 
-      <button class="topbar-brand" id="topbarBrandBtn" type="button">TripMate</button>
+      <div class="topbar-left" style="display: flex; align-items: center; gap: 12px;">
+        <span class="topbar-brand" style="font-size: 1.15rem; font-weight: 700; color: #0F2E25; font-family: var(--tm-font-serif, 'Fraunces', serif);">TripMate Admin</span>
+      </div>
 
       <div class="topbar-actions">
-        <div class="topbar-notif">
-          <button class="icon-btn" id="bellBtn" aria-label="Notifications" title="Notifications" aria-haspopup="true" aria-expanded="false">
+        <div class="topbar-notif" style="position: relative;">
+          <button class="icon-btn" id="bellBtn" (click)="toggleNotifMenu($event)" aria-label="Notifications" title="Notifications" aria-haspopup="true" [attr.aria-expanded]="notifMenuOpen">
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a6 6 0 0 0-6 6c0 4.499-1.411 5.956-2.738 7.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8a6 6 0 0 0-6-6z"/><path d="M10.268 21a2 2 0 0 0 3.464 0"/></svg>
             <span class="notif-dot" id="notifDot" hidden></span>
           </button>
-          <div class="dropdown-menu notif-menu" id="notifMenu" hidden>
-            <div class="notif-menu-head">
-              <span>Notifications</span>
-              <button type="button" class="link-btn" id="notifMarkAllBtn">Mark all as read</button>
+          <div class="dropdown-menu notif-menu" [hidden]="!notifMenuOpen" style="position: absolute; right: 0; top: 48px; width: 280px; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.08); padding: 12px; z-index: 1000;">
+            <div class="notif-menu-head" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0,0,0,0.06); padding-bottom: 8px; margin-bottom: 8px;">
+              <span style="font-weight: 700; font-size: 0.9rem; color: #0F2E25;">Notifications</span>
             </div>
-            <div class="notif-list" id="notifList"></div>
+            <div class="notif-list" style="padding: 16px; text-align: center; color: #687571; font-size: 0.85rem;">No new notifications</div>
           </div>
         </div>
+
         <button class="icon-btn" id="settingsBtn" aria-label="Settings" title="Settings">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         </button>
-        <div class="topbar-account">
-          <button class="topbar-avatar" id="topbarAvatarBtn" aria-label="Account" aria-haspopup="true" aria-expanded="false">
-            <span id="topbarAvatarInitials">A</span>
+
+        <div class="topbar-account" style="position: relative;">
+          <button class="topbar-avatar" id="topbarAvatarBtn" (click)="toggleAccountMenu($event)" aria-label="Account" aria-haspopup="true" [attr.aria-expanded]="accountMenuOpen">
+            <span id="topbarAvatarInitials">{{ adminInitials }}</span>
           </button>
-          <div class="dropdown-menu account-menu" id="accountMenu" hidden>
-            <div class="account-menu-head">
-              <span class="account-menu-name" id="accountMenuName">Admin</span>
-              <span class="account-menu-email" id="accountMenuEmail">No email set</span>
+          <div class="dropdown-menu account-menu" [hidden]="!accountMenuOpen" style="position: absolute; right: 0; top: 48px; width: 220px; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.08); padding: 8px 0; z-index: 1000;">
+            <div class="account-menu-head" style="padding: 12px 16px; border-bottom: 1px solid rgba(0,0,0,0.06);">
+              <span class="account-menu-name" style="display: block; font-weight: 700; color: #0F2E25;">{{ adminName }}</span>
+              <span class="account-menu-email" style="display: block; font-size: 0.8rem; color: #687571;">{{ adminEmail }}</span>
             </div>
-            <button type="button" data-action="home-page">
+            <button type="button" routerLink="/homepage" style="display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 16px; border: none; background: transparent; cursor: pointer; color: #0F2E25; text-align: left; font-size: 0.9rem;">
               <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5"/><path d="M9 21v-7h6v7"/></svg>
               Home
             </button>
-            <button type="button" class="danger" data-action="account-logout">
+            <button type="button" (click)="logout()" style="display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 16px; border: none; background: transparent; cursor: pointer; color: #FF6B4A; text-align: left; font-size: 0.9rem;">
               <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
               Log Out
             </button>
@@ -348,7 +359,7 @@
             <h1>User Management</h1>
             <p>Review platform accounts, roles, and access status.</p>
           </div>
-          <button class="btn-primary" id="addUserBtn" type="button">Add User</button>
+          <button class="btn-primary" id="addUserBtn" type="button" (click)="openAddUserModal()">Add User</button>
         </div>
 
         <div class="panel">
@@ -357,9 +368,9 @@
             <div class="toolbar-left">
               <div class="topbar-search table-search">
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
-                <input type="text" id="usersSearch" placeholder="Search name or email…">
+                <input type="text" id="usersSearch" [(ngModel)]="usersSearchQuery" (input)="applyUserFilters()" placeholder="Search name or email…">
               </div>
-              <select id="usersRoleFilter" class="table-filter" aria-label="Filter users by role">
+              <select id="usersRoleFilter" class="table-filter" [(ngModel)]="selectedRoleFilter" (ngModelChange)="applyUserFilters()" aria-label="Filter users by role">
                 <option value="all">All roles</option>
                 <option value="guest">Guests</option>
                 <option value="host">Hosts</option>
@@ -370,10 +381,38 @@
           <div class="table-wrap">
             <table class="data-table">
               <thead><tr><th>User</th><th>Role</th><th>Status</th><th>Joined</th><th></th></tr></thead>
-              <tbody id="usersBody"></tbody>
+              <tbody id="usersBody">
+                <tr *ngFor="let user of filteredUsers">
+                  <td>
+                    <div class="cell-with-avatar">
+                      <span class="row-avatar" [style.background]="getAvatarColor(user.email || user.name)">{{ getInitials(user.name) }}</span>
+                      <div>
+                        <strong>{{ user.name }}</strong>
+                        <div class="cell-muted">{{ user.email }}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="badge" [ngClass]="getRoleBadgeClass(user.role)">{{ user.role | titlecase }}</span>
+                  </td>
+                  <td>
+                    <span class="badge" [ngClass]="user.isActive ? 'badge-green' : 'badge-red'">{{ user.isActive ? 'Active' : 'Inactive' }}</span>
+                  </td>
+                  <td class="cell-muted">{{ formatDate(user.createdAt) }}</td>
+                  <td>
+                    <div class="row-actions">
+                      <button type="button" class="link-btn user-edit-btn" (click)="openEditUserModal(user)">Edit</button>
+                      <button type="button" class="link-btn user-toggle-btn" (click)="toggleUserActive(user)">{{ user.isActive ? 'Deactivate' : 'Activate' }}</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
             </table>
-            <div class="empty-state" id="usersEmpty" hidden>
+            <div class="empty-state" id="usersEmpty" *ngIf="!isLoading && filteredUsers.length === 0">
               <p>No users match the current filters.</p>
+            </div>
+            <div class="empty-state" *ngIf="isLoading && filteredUsers.length === 0">
+              <p>Loading users...</p>
             </div>
           </div>
         </div>
@@ -474,22 +513,38 @@
             <h1>Admin Accounts</h1>
             <p>Manage who can operate the TripMate control room.</p>
           </div>
-          <button class="btn-primary" id="addAdminBtn" type="button">Add Admin</button>
+          <button class="btn-primary" id="addAdminBtn" type="button" (click)="openAddUserModal()">Add Admin</button>
         </div>
         <div class="panel">
           <div class="panel-head">
             <h2>Authorized Administrators</h2>
             <div class="topbar-search table-search">
               <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
-              <input type="text" id="adminsSearch" placeholder="Search admins…">
+              <input type="text" id="adminsSearch" [(ngModel)]="adminsSearchQuery" (input)="applyAdminFilters()" placeholder="Search admins…">
             </div>
           </div>
           <div class="table-wrap">
             <table class="data-table">
               <thead><tr><th>Admin</th><th>Email</th><th>Role</th><th>Status</th><th></th></tr></thead>
-              <tbody id="adminsBody"></tbody>
+              <tbody id="adminsBody">
+                <tr *ngFor="let admin of filteredAdmins">
+                  <td>
+                    <div class="cell-with-avatar">
+                      <span class="row-avatar" [style.background]="getAvatarColor(admin.email || admin.name)">{{ getInitials(admin.name) }}</span>
+                      <strong>{{ admin.name }}</strong>
+                    </div>
+                  </td>
+                  <td class="cell-muted">{{ admin.email }}</td>
+                  <td><span class="badge badge-blue">Admin</span></td>
+                  <td><span class="badge" [ngClass]="admin.isActive ? 'badge-green' : 'badge-red'">{{ admin.isActive ? 'Active' : 'Inactive' }}</span></td>
+                  <td>
+                    <button type="button" class="link-btn" (click)="openEditUserModal(admin)">Edit</button>
+                  </td>
+                </tr>
+              </tbody>
             </table>
-            <div class="empty-state" id="adminsEmpty" hidden><p>No admin accounts found.</p></div>
+            <div class="empty-state" id="adminsEmpty" *ngIf="!isLoading && filteredAdmins.length === 0"><p>No admin accounts found.</p></div>
+            <div class="empty-state" *ngIf="isLoading && filteredAdmins.length === 0"><p>Loading admins...</p></div>
           </div>
         </div>
       </section>
@@ -626,7 +681,6 @@
     <footer class="app-footer">
       <span>© <span id="footerYear"></span> TripMate Internal. All rights reserved.</span>
       <nav class="footer-links">
-    <ion-menu-button style="color: var(--tm-white);"></ion-menu-button>
         <a href="#" data-action="footer-link">Privacy Policy</a>
       </nav>
     </footer>
@@ -635,40 +689,38 @@
 </div>
 
 <!-- ============ ADD / EDIT USER MODAL ============ -->
-<div class="modal-overlay" id="userModalOverlay" hidden>
+<div class="modal-overlay" id="userModalOverlay" [hidden]="!userModalOpen">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="userModalTitle">
     <div class="modal-head">
-      <h2 id="userModalTitle">Add User</h2>
-      <button class="modal-close" id="userModalClose" aria-label="Close">
+      <h2 id="userModalTitle">{{ editingUserId ? 'Edit User' : 'Add User' }}</h2>
+      <button class="modal-close" id="userModalClose" aria-label="Close" (click)="closeUserModal()">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
       </button>
     </div>
-    <form id="userForm" novalidate>
-      <input type="hidden" id="userId">
+    <form (ngSubmit)="saveUser()" novalidate>
       <div class="field">
         <label for="userName">Full Name</label>
-        <input type="text" id="userName" required>
+        <input type="text" id="userName" [(ngModel)]="userFormModel.name" name="name" required>
       </div>
       <div class="field">
         <label for="userEmail">Email Address</label>
-        <input type="email" id="userEmail" required>
-      </div>
-      <div class="field">
-        <label for="userPassword">Password <span class="field-optional">(required for new users)</span></label>
-        <input type="password" id="userPassword" minlength="8">
+        <input type="email" id="userEmail" [(ngModel)]="userFormModel.email" name="email" required [disabled]="editingUserId !== null">
       </div>
       <div class="field-row">
         <div class="field">
           <label for="userRole">Role</label>
-          <select id="userRole"><option value="guest">Guest</option><option value="host">Host</option><option value="admin">Admin</option></select>
+          <select id="userRole" [(ngModel)]="userFormModel.role" name="role">
+            <option value="guest">Guest</option>
+            <option value="host">Host</option>
+            <option value="admin">Admin</option>
+          </select>
         </div>
         <div class="field user-checks">
-          <label><input type="checkbox" id="userVerified"> Verified</label>
-          <label><input type="checkbox" id="userActive" checked> Active</label>
+          <label><input type="checkbox" [(ngModel)]="userFormModel.isActive" name="isActive"> Active</label>
         </div>
       </div>
       <div class="modal-actions">
-        <button type="button" class="btn-secondary" id="userCancelBtn">Cancel</button>
+        <button type="button" class="btn-secondary" id="userCancelBtn" (click)="closeUserModal()">Cancel</button>
         <button type="submit" class="btn-primary">Save User</button>
       </div>
     </form>

@@ -1,11 +1,11 @@
-import { Component, OnInit, OnDestroy, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { RouterLink, Router, NavigationEnd } from '@angular/router';
 import { AuthService, AppUser } from '../../services/auth.service';
 import { Subscription } from 'rxjs';
-import { IonIcon, IonMenuButton } from '@ionic/angular';
+import { IonIcon, IonMenuButton, AlertController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { logOutOutline, personCircleOutline, heartOutline, mapOutline, calendarOutline, businessOutline, arrowBackOutline } from 'ionicons/icons';
+import { logOutOutline, personCircleOutline, heartOutline, mapOutline, calendarOutline, businessOutline, arrowBackOutline, shieldCheckmarkOutline, shieldOutline, personOutline, homeOutline } from 'ionicons/icons';
 import { filter } from 'rxjs/operators';
 
 @Component({
@@ -25,7 +25,9 @@ import { filter } from 'rxjs/operators';
         <a routerLink="/stays" style="color: white; text-decoration: none; font-size: 14.5px; font-weight: 500;">Stays</a>
         <a routerLink="/how-it-works" style="color: white; text-decoration: none; font-size: 14.5px; font-weight: 500;">How it works</a>
         <a *ngIf="user === null" routerLink="/become-host" style="color: white; text-decoration: none; font-size: 14.5px; font-weight: 500;">Become a Host</a>
-        <a *ngIf="user && user !== 'loading' && user.role === 'host'" routerLink="/admin" style="color: white; text-decoration: none; font-size: 14.5px; font-weight: 500;">Host Dashboard</a>
+        <a *ngIf="user && user !== 'loading' && user.role === 'guest'" (click)="confirmBecomeHost($event)" style="color: white; text-decoration: none; font-size: 14.5px; font-weight: 500; cursor: pointer;">Become a Host</a>
+        <a *ngIf="user && user !== 'loading' && user.role === 'host'" routerLink="/dashboard" style="color: white; text-decoration: none; font-size: 14.5px; font-weight: 500;">Host Dashboard</a>
+        <a *ngIf="user && user !== 'loading' && user.role === 'admin'" routerLink="/admin" style="color: white; text-decoration: none; font-size: 14.5px; font-weight: 500;">Admin Dashboard</a>
       </div>
 
       <div class="nav-right" style="display: flex; align-items: center; justify-content: flex-end; gap: 16px; flex: 1;">
@@ -46,16 +48,22 @@ import { filter } from 'rxjs/operators';
         </ng-container>
 
         <!-- Logged-in state dropdown -->
-        <div class="user-menu-container" *ngIf="user && user !== 'loading'" style="position: relative;" (click)="toggleDropdown($event)">
-          <button class="user-avatar-btn" style="width: 44px; height: 44px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); background: var(--tm-color-primary, #FF6B4A); color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <div class="user-menu-container" *ngIf="user && user !== 'loading'" style="position: relative; display: flex; align-items: center; gap: 10px;">
+          <!-- Role badge in header next to avatar -->
+          <span class="role-badge" [ngClass]="'badge-' + user.role">{{ user.role }}</span>
+
+          <button class="user-avatar-btn" (click)="toggleDropdown($event)" style="width: 44px; height: 44px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); background: var(--tm-color-primary, #FF6B4A); color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
             <img *ngIf="user.avatar_url" [src]="user.avatar_url" style="width: 100%; height: 100%; object-fit: cover;" />
             <span *ngIf="!user.avatar_url">{{ initials }}</span>
           </button>
 
           <div class="user-dropdown" *ngIf="dropdownOpen" (click)="$event.stopPropagation()" style="position: absolute; top: 56px; right: 0; width: 260px; background: #0F2E25; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); z-index: 9999; color: #FFFFFF; display: flex; flex-direction: column; overflow: hidden;">
             <div class="dropdown-header" style="padding: 16px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); background: rgba(0,0,0,0.2);">
-              <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 4px;">{{ user.full_name || 'Guest' }}</div>
-              <div style="font-size: 0.85rem; color: #F8F5EE; opacity: 0.8;">{{ user.email }}</div>
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px;">
+                <span style="font-weight: 700; font-size: 1.05rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ user.full_name || 'TripMate User' }}</span>
+                <span class="role-badge" [ngClass]="'badge-' + user.role">{{ user.role }}</span>
+              </div>
+              <div style="font-size: 0.85rem; color: #F8F5EE; opacity: 0.8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ user.email }}</div>
             </div>
             
             <div style="padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
@@ -68,11 +76,20 @@ import { filter } from 'rxjs/operators';
               <a routerLink="/wishlist" class="dropdown-item" style="padding: 12px 20px; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; gap: 12px; transition: 0.2s;">
                 <ion-icon name="heart-outline"></ion-icon> Wishlist
               </a>
+              <!-- Host Dashboard if Host -->
+              <a *ngIf="user.role === 'host'" routerLink="/dashboard" class="dropdown-item" style="padding: 12px 20px; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; gap: 12px; transition: 0.2s;">
+                <ion-icon name="business-outline"></ion-icon> Host Dashboard
+              </a>
+              <!-- Admin Dashboard if Admin -->
+              <a *ngIf="user.role === 'admin'" routerLink="/admin" class="dropdown-item" style="padding: 12px 20px; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; gap: 12px; transition: 0.2s;">
+                <ion-icon name="shield-checkmark-outline"></ion-icon> Admin Dashboard
+              </a>
             </div>
 
-            <div style="padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-              <a *ngIf="user.role !== 'host'" routerLink="/become-host" class="dropdown-item" style="padding: 12px 20px; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; gap: 12px; transition: 0.2s;">
-                <ion-icon name="business-outline"></ion-icon> Switch to Hosting
+            <div style="padding: 8px 0;">
+              <!-- Become a Host if Guest -->
+              <a *ngIf="user.role === 'guest'" (click)="confirmBecomeHost($event)" class="dropdown-item" style="padding: 12px 20px; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; gap: 12px; transition: 0.2s; cursor: pointer;">
+                <ion-icon name="business-outline"></ion-icon> Become a Host
               </a>
               <a (click)="logout()" class="dropdown-item" style="padding: 12px 20px; color: #FF6B4A; text-decoration: none; display: flex; align-items: center; gap: 12px; transition: 0.2s; cursor: pointer;">
                 <ion-icon name="log-out-outline"></ion-icon> Log out
@@ -103,8 +120,14 @@ export class AuthButtonsComponent implements OnInit, OnDestroy {
   private routerSub!: Subscription;
   private clickListener!: (e: MouseEvent) => void;
 
-  constructor(private auth: AuthService, private router: Router, private location: Location, private cdr: ChangeDetectorRef) {
-    addIcons({ logOutOutline, personCircleOutline, heartOutline, mapOutline, calendarOutline, businessOutline, arrowBackOutline });
+  constructor(
+    private auth: AuthService,
+    private router: Router,
+    private location: Location,
+    private cdr: ChangeDetectorRef,
+    private alertCtrl: AlertController
+  ) {
+    addIcons({ logOutOutline, personCircleOutline, heartOutline, mapOutline, calendarOutline, businessOutline, arrowBackOutline, shieldCheckmarkOutline, shieldOutline, personOutline, homeOutline });
   }
 
   ngOnInit() {
@@ -142,6 +165,34 @@ export class AuthButtonsComponent implements OnInit, OnDestroy {
   toggleDropdown(event: Event) {
     event.stopPropagation();
     this.dropdownOpen = !this.dropdownOpen;
+  }
+
+  async confirmBecomeHost(event?: Event) {
+    if (event) event.stopPropagation();
+    this.dropdownOpen = false;
+
+    const alert = await this.alertCtrl.create({
+      header: 'Switch to Host Account?',
+      message: 'You will be able to list properties and manage bookings.',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Switch to Host',
+          handler: async () => {
+            try {
+              await this.auth.becomeHost();
+              await this.router.navigateByUrl('/host-dashboard');
+            } catch (err: any) {
+              console.error('Error becoming host:', err);
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
   async logout() {

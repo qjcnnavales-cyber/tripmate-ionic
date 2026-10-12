@@ -38,7 +38,15 @@ export class LoginPage implements OnInit, OnDestroy {
     this.authSub = this.auth.currentUser$.subscribe(user => {
       if (user && user !== 'loading') {
         const redirectParam = this.route.snapshot.queryParams['redirect'];
-        this.router.navigateByUrl(redirectParam || '/homepage');
+        if (redirectParam) {
+          this.router.navigateByUrl(redirectParam);
+        } else if (user.role === 'admin') {
+          this.router.navigateByUrl('/admin');
+        } else if (user.role === 'host') {
+          this.router.navigateByUrl('/dashboard');
+        } else {
+          this.router.navigateByUrl('/homepage');
+        }
       }
     });
 
@@ -62,8 +70,13 @@ export class LoginPage implements OnInit, OnDestroy {
     this.emailError = '';
     this.passwordError = '';
 
+    let targetEmail = this.email.trim();
+    if (targetEmail.toLowerCase() === 'admin') {
+      targetEmail = 'admin@tripmate.app';
+    }
+
     let hasError = false;
-    if (!this.email || (this.email.includes('@') && !this.isValidEmail(this.email))) {
+    if (!targetEmail || !this.isValidEmail(targetEmail)) {
       this.emailError = 'Enter a valid email.'; hasError = true;
     }
     if (!this.password) { this.passwordError = 'Password is required.'; hasError = true; }
@@ -71,11 +84,20 @@ export class LoginPage implements OnInit, OnDestroy {
 
     this.isSubmitting = true;
     try {
-      const user = await this.auth.signIn(this.email.trim(), this.password);
+      const user = await this.auth.signIn(targetEmail, this.password);
       const firstName = user?.full_name ? user.full_name.split(' ')[0] : 'there';
       this.displayToast(`Welcome back, ${firstName}!`);
       const redirectParam = this.route.snapshot.queryParams['redirect'];
-      const destination = redirectParam || '/homepage';
+      let destination = redirectParam;
+      if (!destination) {
+        if (user?.role === 'admin') {
+          destination = '/admin';
+        } else if (user?.role === 'host') {
+          destination = '/dashboard';
+        } else {
+          destination = '/homepage';
+        }
+      }
       await this.router.navigateByUrl(destination);
     } catch (error: any) {
       this.emailError = error.message || 'Unable to log in.';
