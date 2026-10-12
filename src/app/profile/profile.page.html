@@ -68,12 +68,18 @@
                             </div>
 
                             <div class="form-group" *ngIf="user">
-                                <label>Account Role</label>
-                                <div style="margin-top: 6px;">
+                                <label>Role</label>
+                                <div style="margin-top: 6px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
                                     <span class="role-badge" [ngClass]="'badge-' + user.role">
                                         <ion-icon [name]="user.role === 'host' ? 'home-outline' : (user.role === 'admin' ? 'shield-checkmark-outline' : 'person-outline')"></ion-icon>
                                         {{ user.role }}
                                     </span>
+                                </div>
+                                <div *ngIf="user.role === 'guest'" style="margin-top: 10px;">
+                                    <button type="button" class="btn btn-outline" (click)="confirmBecomeHost()" style="display: inline-flex; align-items: center; gap: 8px; border: 1px solid #FF6B4A; color: #FF6B4A; background: transparent; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                                        <ion-icon name="home-outline"></ion-icon>
+                                        Become a Host
+                                    </button>
                                 </div>
                             </div>
 

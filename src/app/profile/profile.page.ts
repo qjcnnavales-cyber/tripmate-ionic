@@ -11,7 +11,9 @@ import {
   IonToolbar,
   IonMenuButton,
   IonBackButton,
-  IonIcon
+  IonIcon,
+  AlertController,
+  ToastController
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { homeOutline, personOutline, shieldCheckmarkOutline } from 'ionicons/icons';
@@ -72,7 +74,9 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   constructor(
     private auth: AuthService,
-    private router: Router
+    private router: Router,
+    private alertCtrl: AlertController,
+    private toastCtrl: ToastController
   ) {
     addIcons({ homeOutline, personOutline, shieldCheckmarkOutline });
   }
@@ -308,6 +312,38 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   closeUserDropdown() {
     this.userDropdownOpen = false;
+  }
+
+  async confirmBecomeHost() {
+    const alert = await this.alertCtrl.create({
+      header: 'Switch to Host Account?',
+      message: 'You will be able to list properties and manage bookings.',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Confirm',
+          handler: async () => {
+            try {
+              await this.auth.becomeHost();
+              const toast = await this.toastCtrl.create({
+                message: 'Welcome, host! You can now list properties.',
+                duration: 3000,
+                color: 'success',
+                position: 'bottom'
+              });
+              await toast.present();
+              await this.router.navigateByUrl('/host-dashboard');
+            } catch (err: any) {
+              console.error('Error becoming host:', err);
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
   async logout(event: Event) {

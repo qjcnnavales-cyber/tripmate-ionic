@@ -3,7 +3,7 @@ import { CommonModule, Location } from '@angular/common';
 import { RouterLink, Router, NavigationEnd } from '@angular/router';
 import { AuthService, AppUser } from '../../services/auth.service';
 import { Subscription } from 'rxjs';
-import { IonIcon, IonMenuButton, AlertController } from '@ionic/angular';
+import { IonIcon, IonMenuButton, AlertController, ToastController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { logOutOutline, personCircleOutline, heartOutline, mapOutline, calendarOutline, businessOutline, arrowBackOutline, shieldCheckmarkOutline, shieldOutline, personOutline, homeOutline } from 'ionicons/icons';
 import { filter } from 'rxjs/operators';
@@ -73,12 +73,12 @@ import { filter } from 'rxjs/operators';
               <a routerLink="/dashboard" class="dropdown-item" style="padding: 12px 20px; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; gap: 12px; transition: 0.2s;">
                 <ion-icon name="calendar-outline"></ion-icon> My Trips
               </a>
+              <!-- Host: My Listings -->
+              <a *ngIf="user.role === 'host'" routerLink="/dashboard" class="dropdown-item" style="padding: 12px 20px; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; gap: 12px; transition: 0.2s;">
+                <ion-icon name="home-outline"></ion-icon> My Listings
+              </a>
               <a routerLink="/wishlist" class="dropdown-item" style="padding: 12px 20px; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; gap: 12px; transition: 0.2s;">
                 <ion-icon name="heart-outline"></ion-icon> Wishlist
-              </a>
-              <!-- Host Dashboard if Host -->
-              <a *ngIf="user.role === 'host'" routerLink="/dashboard" class="dropdown-item" style="padding: 12px 20px; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; gap: 12px; transition: 0.2s;">
-                <ion-icon name="business-outline"></ion-icon> Host Dashboard
               </a>
               <!-- Admin Dashboard if Admin -->
               <a *ngIf="user.role === 'admin'" routerLink="/admin" class="dropdown-item" style="padding: 12px 20px; color: #FFFFFF; text-decoration: none; display: flex; align-items: center; gap: 12px; transition: 0.2s;">
@@ -125,14 +125,14 @@ export class AuthButtonsComponent implements OnInit, OnDestroy {
     private router: Router,
     private location: Location,
     private cdr: ChangeDetectorRef,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private toastCtrl: ToastController
   ) {
     addIcons({ logOutOutline, personCircleOutline, heartOutline, mapOutline, calendarOutline, businessOutline, arrowBackOutline, shieldCheckmarkOutline, shieldOutline, personOutline, homeOutline });
   }
 
   ngOnInit() {
     this.sub = this.auth.currentUser$.subscribe(user => {
-      // Keep 'loading' as-is so the skeleton shows; only update when resolved
       this.user = user as any;
       if (user && user !== 'loading' && (user as any).full_name) {
         this.initials = (user as any).full_name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
@@ -180,10 +180,17 @@ export class AuthButtonsComponent implements OnInit, OnDestroy {
           role: 'cancel'
         },
         {
-          text: 'Switch to Host',
+          text: 'Confirm',
           handler: async () => {
             try {
               await this.auth.becomeHost();
+              const toast = await this.toastCtrl.create({
+                message: 'Welcome, host! You can now list properties.',
+                duration: 3000,
+                color: 'success',
+                position: 'bottom'
+              });
+              await toast.present();
               await this.router.navigateByUrl('/host-dashboard');
             } catch (err: any) {
               console.error('Error becoming host:', err);

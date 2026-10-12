@@ -1005,29 +1005,29 @@ input[type="checkbox"] {
   }
 
   &.badge-host {
-    background-color: #FF6B4A;
-    color: #FFFFFF;
+    background-color: #FF6B4A !important;
+    color: #FFFFFF !important;
     border: 1px solid rgba(255, 255, 255, 0.25);
     ion-icon {
-      color: #FFFFFF;
+      color: #FFFFFF !important;
     }
   }
 
   &.badge-guest {
-    background-color: #6B7280;
-    color: #FFFFFF;
+    background-color: #6B7280 !important;
+    color: #FFFFFF !important;
     border: 1px solid rgba(255, 255, 255, 0.2);
     ion-icon {
-      color: #FFFFFF;
+      color: #FFFFFF !important;
     }
   }
 
   &.badge-admin {
-    background-color: #062B27;
-    color: #4ADE80;
-    border: 1px solid #16A34A;
+    background-color: #0F2E25 !important;
+    color: #FFFFFF !important;
+    border: 1px solid rgba(255, 255, 255, 0.25);
     ion-icon {
-      color: #4ADE80;
+      color: #FFFFFF !important;
     }
   }
 }
