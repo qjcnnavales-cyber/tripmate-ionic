@@ -13,8 +13,8 @@
         <div class="dashboard-container">
             <aside class="dashboard-sidebar stagger-in stagger-in-2" id="sidebar" [class.open]="sidebarOpen">
             <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true" [class.open]="sidebarOpen" (click)="sidebarOpen = false"></div>
-                <div class="sidebar-header">
-                    <h2>My Trips</h2>
+                <div class="sidebar-header" style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; margin-bottom: 20px; border-bottom: 2px solid #E9E4D6;">
+                    <h2 style="font-family: var(--tm-font-serif, 'Fraunces', Georgia, serif); font-size: 24px; font-weight: 700; color: #0F2E25; margin: 0; letter-spacing: -0.01em; line-height: 1.2;">My Trips</h2>
                     <button class="sidebar-close" id="sidebarClose" aria-label="Close sidebar" (click)="sidebarOpen = false">&times;</button>
                 </div>
                 <nav class="sidebar-nav">
@@ -65,12 +65,12 @@
                             <div class="trip-content">
                                 <div class="trip-header">
                                     <h3 class="trip-title">{{ (booking.property?.name || 'Property') }}</h3>
-                                    <span class="trip-price">{{ "?" + booking.total_price }}</span>
+                                    <span class="trip-price">&#8369;{{ (booking.total_price || 0) | number:'1.0-0' }}</span>
                                 </div>
                                 <div class="trip-meta">
                                     <span class="trip-dates">
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                        {{ formatDate(booking.check_in) }} – {{ formatDate(booking.check_out) }}
+                                        {{ formatDate(booking.check_in) }} &ndash; {{ formatDate(booking.check_out) }}
                                     </span>
                                     <span class="trip-guests">
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -111,12 +111,12 @@
                             <div class="trip-content">
                                 <div class="trip-header">
                                     <h3 class="trip-title">{{ (booking.property?.name || 'Property') }}</h3>
-                                    <span class="trip-price">{{ "?" + booking.total_price }}</span>
+                                    <span class="trip-price">&#8369;{{ (booking.total_price || 0) | number:'1.0-0' }}</span>
                                 </div>
                                 <div class="trip-meta">
                                     <span class="trip-dates">
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                        {{ formatDate(booking.check_in) }} – {{ formatDate(booking.check_out) }}
+                                        {{ formatDate(booking.check_in) }} &ndash; {{ formatDate(booking.check_out) }}
                                     </span>
                                     <span class="trip-guests">
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -156,12 +156,12 @@
                             <div class="trip-content">
                                 <div class="trip-header">
                                     <h3 class="trip-title">{{ (booking.property?.name || 'Property') }}</h3>
-                                    <span class="trip-price">{{ "?" + booking.total_price }}</span>
+                                    <span class="trip-price">&#8369;{{ (booking.total_price || 0) | number:'1.0-0' }}</span>
                                 </div>
                                 <div class="trip-meta">
                                     <span class="trip-dates">
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                        {{ formatDate(booking.check_in) }} – {{ formatDate(booking.check_out) }}
+                                        {{ formatDate(booking.check_in) }} &ndash; {{ formatDate(booking.check_out) }}
                                     </span>
                                     <span class="trip-guests">
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -202,12 +202,12 @@
                             <div class="trip-content">
                                 <div class="trip-header">
                                     <h3 class="trip-title">{{ (booking.property?.name || 'Property') }}</h3>
-                                    <span class="trip-price">{{ "?" + booking.total_price }}</span>
+                                    <span class="trip-price">&#8369;{{ (booking.total_price || 0) | number:'1.0-0' }}</span>
                                 </div>
                                 <div class="trip-meta">
                                     <span class="trip-dates">
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                        {{ formatDate(booking.check_in) }} – {{ formatDate(booking.check_out) }}
+                                        {{ formatDate(booking.check_in) }} &ndash; {{ formatDate(booking.check_out) }}
                                     </span>
                                     <span class="trip-guests">
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>

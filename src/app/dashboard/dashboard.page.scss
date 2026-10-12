@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap');
 
-:root {
+:host, :root {
   /* Homepage-inspired color palette with tropical twist */
   --teal-950: #062B27;
   --teal-900: #0B3D3A;
@@ -315,17 +315,19 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--space-lg);
-  padding-bottom: var(--space-md);
-  border-bottom: 2px solid var(--cream-dim);
+  margin-bottom: 20px;
+  padding: 16px 20px;
+  border-bottom: 2px solid var(--cream-dim, #E9E4D6);
 }
 
 .sidebar-header h2 {
-  font-family: 'Fraunces', serif;
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--teal-900);
+  font-family: var(--tm-font-serif, 'Fraunces', Georgia, serif);
+  font-size: 24px;
+  font-weight: 700;
+  color: #0F2E25;
   margin: 0;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
 }
 
 .sidebar-close {

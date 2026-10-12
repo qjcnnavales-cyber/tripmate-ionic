@@ -73,9 +73,13 @@ export class ReservationsPage implements OnInit {
     this.currentFilter = filter;
   }
 
+  peso(n: number | undefined | null): string {
+    return '\u20B1' + Math.round(Number(n) || 0).toLocaleString('en-PH');
+  }
+
   formatDate(dateStr: string) {
     const date = new Date(dateStr);
-    if (isNaN(date.getTime())) return '—';
+    if (isNaN(date.getTime())) return '-';
     return date.toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' });
   }
 

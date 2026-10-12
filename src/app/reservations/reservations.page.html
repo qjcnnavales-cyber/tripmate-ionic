@@ -40,7 +40,7 @@
     <div class="empty-state" *ngIf="!isLoading && categories[currentFilter].length === 0" style="text-align: center; padding: 80px 24px; background: white; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); max-width: 600px; margin: 0 auto;">
       <ion-icon name="calendar-outline" style="font-size: 56px; color: #FF6B4A; margin-bottom: 24px; display: block; margin-inline: auto; background: rgba(255,107,74,0.1); padding: 24px; border-radius: 50%; width: max-content;"></ion-icon>
       <h3 style="font-family: 'Fraunces', serif; color: #0F2E25; font-size: 1.8rem; margin: 0 0 12px 0;">No reservations found</h3>
-      <p style="color: #666; margin-bottom: 32px; font-size: 1.1rem;">You have no {{currentFilter}} reservations — start exploring!</p>
+      <p style="color: #666; margin-bottom: 32px; font-size: 1.1rem;">You have no {{currentFilter}} reservations &mdash; start exploring!</p>
       <a routerLink="/stays" style="background: #FF6B4A; color: white; padding: 14px 32px; border-radius: 100px; text-decoration: none; font-weight: 600; display: inline-block;">Explore Stays</a>
     </div>
 
@@ -71,7 +71,7 @@
             </div>
             <div style="display: flex; justify-content: space-between; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 12px; margin-top: 12px;">
               <span style="color: #666; font-size: 0.9rem;">Total Price:</span>
-              <strong style="color: #FF6B4A; font-size: 1.1rem;">PHP {{ booking.total_price | number }}</strong>
+              <strong style="color: #FF6B4A; font-size: 1.1rem;">&#8369;{{ (booking.total_price || 0) | number:'1.0-0' }}</strong>
             </div>
           </div>
 

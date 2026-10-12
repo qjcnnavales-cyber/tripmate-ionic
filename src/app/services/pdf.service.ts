@@ -129,7 +129,7 @@ export class PdfService {
 
   private formatDate(dateStr: string) {
     const date = new Date(dateStr);
-    if (isNaN(date.getTime())) return '—';
+    if (isNaN(date.getTime())) return '-';
     return date.toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' });
   }
 }

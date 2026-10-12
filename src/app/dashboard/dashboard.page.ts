@@ -212,8 +212,8 @@ export class DashboardPage implements OnInit, OnDestroy {
     this.userDropdownOpen = false;
   }
 
-  peso(n: number) {
-    return '₱' + Math.round(Number(n) || 0).toLocaleString('en-PH');
+  peso(n: number | undefined | null) {
+    return '\u20B1' + Math.round(Number(n) || 0).toLocaleString('en-PH');
   }
 
   writeReview(bookingId: string) {
