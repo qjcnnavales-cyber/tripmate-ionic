@@ -556,6 +556,46 @@
 
 
 /* =========================================
+   ADD / EDIT MODAL + EMPTY STATE
+========================================= */
+
+.activity-form {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 16px;
+
+  padding-top: 8px;
+}
+
+.activity-form .save-btn {
+  margin-top: 8px;
+
+  --background: var(--tm-coral-500);
+  --background-hover: var(--tm-coral-600);
+
+  --color: var(--tm-white);
+
+  --border-radius: 999px;
+
+  font-weight: 700;
+
+  text-transform: none;
+}
+
+.empty-state {
+  padding: 32px 16px;
+
+  text-align: center;
+
+  color: var(--tm-ink-500);
+
+  font-size: 14px;
+}
+
+
+/* =========================================
    RESPONSIVE TABLET
 ========================================= */
 
